@@ -16,14 +16,11 @@ _Keep in mind that it's a very basic implementation and a lot of work should (an
 * libusb-1.0
 
 ### Building
-Simply clone or download & unpack this repo and 
-#### compile with
+Simply clone or download & unpack this repo and _make_
+
+This will produce _SuoraFX-Effects-Animator_ executable that should be executed like this:
 ```
-valac --pkg gtk+-3.0 --pkg libusb-1.0 --pkg gtksourceview-3.0 -X "-I/usr/include/lua5.2" --pkg lua -c "%f"
-```
-#### build with
-```
-valac --pkg gtk+-3.0 --pkg libusb-1.0 --pkg gtksourceview-3.0 -X "-I/usr/include/lua5.2" --pkg lua "%f"
+sudo ./SuoraFX-Effects-Animator
 ```
 
 ## TODO

@@ -1,12 +1,14 @@
-# ROCCAT-SuoraFX-Effects-Animator
+# ROCCAT SuoraFX Effects Animator
 Made with Vala and Glade.
 
 _Keep in mind that it's a very basic implementation and a lot of work should (and will) be done here._
+
 
 ## Features
 * evaluating Lua code
 * scripting effects in Lua
 * premade built-in presets of SuoraFX
+
 
 ## Installation
 ### Dependencies
@@ -23,10 +25,12 @@ This will produce _SuoraFX-Effects-Animator_ executable that should be executed 
 sudo ./SuoraFX-Effects-Animator
 ```
 
+
 ## TODO
-* no keyboard flickering when setting custom preset
+* add all premade built-in presets
 * remapping keys
 * effects API
+* no keyboard flickering when setting custom preset
 
 # Contact
 email me at: [wolf2789@gmail.com](mailto:wolf2789@gmail.com)

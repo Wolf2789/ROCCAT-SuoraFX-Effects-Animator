@@ -1,6 +1,6 @@
 # ROCCAT SuoraFX Effects Animator
 Made with Vala and Glade.
-
+![SuoraFX Effects Animator](http://i.imgur.com/7sCAHEu.png)
 _Keep in mind that it's a very basic implementation and a lot of work should (and will) be done here._
 
 

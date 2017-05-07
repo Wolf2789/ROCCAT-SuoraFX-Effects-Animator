@@ -13,14 +13,17 @@ namespace SuoraFXEffectsAnimator {
 		}
 
 		public uint8[]	get()							{ return this.data; }
+		public void		set(uint8[] data)				{ this.data = data; }
 		public uint8	getAt(int index)				{ return this.data[index]; }
 		public void		setAt(int index, uint8 value)	{ this.data[index] = value; }
 	}
 
 	public class Preset {
 		private Packet[] packet;
-		public Preset() {
+		private bool sendCustomData;
+		public Preset(bool sendCustomData = false) {
 			this.packet = {};
+			this.sendCustomData = sendCustomData;
 		}
 		
 		public void addPacket(uint8[] p, bool enabled = true) {
@@ -32,6 +35,14 @@ namespace SuoraFXEffectsAnimator {
 		}
 		
 		public void send(DeviceHandle handle) {
+			// send custom data if needed
+			if (sendCustomData) {
+				handle.control_transfer(0x21, 0x09, 0x0300, 0x03, { 0x12, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00, 0xE5 }, 8, 0);
+				int written;
+				for (int i = 0; i < 8; i++)
+					handle.interrupt_transfer(0x06, device.getRowAt(i), out written, 0);
+			}
+			// send command message
 			foreach (Packet p in packet)
 				if (p.enabled)
 					handle.control_transfer(0x21, 0x09, 0x0300, 0x03, p.get(), 8, 0);
@@ -67,45 +78,4 @@ namespace SuoraFXEffectsAnimator {
 			}
 		}
 	}
-
-	public class CustomPreset : Preset {
-		private Packet[] data;
-		public CustomPreset() {
-			base();
-			// init packets
-			this.addPacket({ 0x08, 0x01, 0x33, 0x0A, 0x00, 0x08, 0x01, 0xB0 });
-			this.addPacket({ 0x12, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00, 0xE5 });
-			this.addPacket({ 0x08, 0x02, 0x33, 0x0A, 0x32, 0x08, 0x00, 0x7E });
-			this.data = {};
-			for (int i = 0; i < 8; i++)
-				this.data += new Packet({0x00, 0xFF, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-							0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-							0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-							0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}, true);
-		}
-
-		public uint8[] getData(int y) {
-			return this.data[y].get();
-		}
-		
-		public uint8 get(int x, int y) {
-			return this.data[y].getAt(x);
-		}
-		
-		public void set(int x, int y, uint8 r, uint8 g, uint8 b) {
-			this.data[y].setAt( x , r);
-			this.data[y].setAt(x+1, g);
-			this.data[y].setAt(x+2, b);
-		}
-
-		public new void send(DeviceHandle handle) {
-			//handle.control_transfer(0x21, 0x09, 0x0300, 0x03, getPacket(0), 8, 0);
-			handle.control_transfer(0x21, 0x09, 0x0300, 0x03, getPacket(1), 8, 0);
-			int written;
-			for (int i = 0; i < 8; i++)
-				handle.interrupt_transfer(0x06, this.getData(i), out written, 0);
-			handle.control_transfer(0x21, 0x09, 0x0300, 0x03, getPacket(2), 8, 0);
-		}
-	}
-
 }

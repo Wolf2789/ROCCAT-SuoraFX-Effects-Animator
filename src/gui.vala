@@ -51,7 +51,7 @@ namespace SuoraFXEffectsAnimator {
 
 			lFile.set_label(file_uri);
 			EditorBuffer = Editor.get_buffer();
-			EditorBuffer.set_text("keyboard_update(Preset.COLORSHIFT)\n");
+			EditorBuffer.set_text("keyboard_key(0,0,255,0,0) -- red L_CTRL key\nkeyboard_update()\n");
 			OutputBuffer = Output.get_buffer();
 
 			// initialize components events
@@ -117,6 +117,8 @@ namespace SuoraFXEffectsAnimator {
 			});
 			
 			bRun.clicked.connect(() => {
+				device.update("CUSTOM");
+				
 				log("# Executing Lua code... ");
 				lua.execute(get_lua_code());
 				log("# Done.");

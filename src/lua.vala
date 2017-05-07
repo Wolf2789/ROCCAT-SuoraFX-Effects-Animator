@@ -15,6 +15,7 @@ namespace SuoraFXEffectsAnimator {
 			L.register("print", print);
 			L.register("keyboard_update", keyboard_update);
 			L.register("keyboard_key", keyboard_key);
+			L.register("keyboard_reset", keyboard_reset);
 		}
 		
 		public bool available() {
@@ -58,14 +59,11 @@ namespace SuoraFXEffectsAnimator {
 		static int keyboard_key(LuaVM L) {
 			int args = L.get_top();
 			if (args == 2) {
-				int x = ((L.to_integer(1) % 16) * 4) + 1;
+				int x = ((L.to_integer(1) % 16) * 4);
 				int y = L.to_integer(2) % 8;
-				if (device.presets.has_key("CUSTOM")) {
-					CustomPreset preset = (CustomPreset)device.presets.get("CUSTOM");
-					L.push_number(preset.get( x , y));
-					L.push_number(preset.get(x+1, y));
-					L.push_number(preset.get(x+2, y));
-				}
+				L.push_number(device.getDataAt( x ,y));
+				L.push_number(device.getDataAt(x+1,y));
+				L.push_number(device.getDataAt(x+2,y));
 				return 3;
 			} else if (args == 5) {
 				int x = ((L.to_integer(1) % 16) * 4) + 1;
@@ -73,14 +71,22 @@ namespace SuoraFXEffectsAnimator {
 				int r = L.to_integer(3) % 256;
 				int g = L.to_integer(4) % 256;
 				int b = L.to_integer(5) % 256;
-				if (device.presets.has_key("CUSTOM")) {
-					CustomPreset preset = (CustomPreset)device.presets.get("CUSTOM");
-					preset.set(x, y, (uint8)r, (uint8)g, (uint8)b);
-				}
+				device.setDataAt(x, y, (uint8)r, (uint8)g, (uint8)b);
 				L.push_number(0);
 			} else
 				L.push_number(1);
 			return 1;
+		}
+		
+		static int keyboard_reset(LuaVM L) {
+			int args = L.get_top();
+			if (args > 0) {
+				device.resetRow(L.to_integer(1));
+			} else {
+				for (int i = 0; i < 8; i++)
+					device.resetRow(i);
+			}
+			return 0;
 		}
 	}
 }

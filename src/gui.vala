@@ -13,7 +13,8 @@ namespace SuoraFXEffectsAnimator {
 		private Gtk.TextView		Output;
 		private Gtk.Button			bOpen;
 		private Gtk.Button			bSave;
-		public Gtk.Switch			bSwitch;
+		public Gtk.Button			bRun;
+		public Gtk.Switch			bClaim;
 		private Gtk.Label			lFile;
 		private string				file_uri;
 		
@@ -35,6 +36,7 @@ namespace SuoraFXEffectsAnimator {
 			window.window_position = WindowPosition.CENTER;
 			window.set_default_size(450, 300);
 			window.set_titlebar(builder.get_object("main_headerbar") as Gtk.HeaderBar);
+			window.set_title("ROCCAT SuoraFX Effects Animator");
 			window.destroy.connect(Gtk.main_quit);
 
 			// initialize components
@@ -43,7 +45,8 @@ namespace SuoraFXEffectsAnimator {
 			Output = builder.get_object("editor_outputview") as Gtk.TextView;
 			bOpen = builder.get_object("button_open") as Gtk.Button;
 			bSave = builder.get_object("button_save") as Gtk.Button;
-			bSwitch = builder.get_object("switch_run") as Gtk.Switch;
+			bRun = builder.get_object("button_run") as Gtk.Button;
+			bClaim = builder.get_object("switch_claim") as Gtk.Switch;
 			lFile = builder.get_object("label_file") as Gtk.Label;
 
 			lFile.set_label(file_uri);
@@ -91,9 +94,43 @@ namespace SuoraFXEffectsAnimator {
 					save_editor_to_file();
 				}
 			});
+			
+			bClaim.notify["active"].connect(() => {
+				if (device.open()) {
+					if (bClaim.active) {
+						log("# Connecting to SuoraFX...", false);
+						if (device.claim()) {
+							log("OK");
+							bRun.set_sensitive(lua.available());
+						} else {
+							log("ERR: Failed to claim device interface.");
+						}
+					} else {
+						log("# Disconnecting from SuoraFX...");
+						bRun.set_sensitive(false);
+						device.unclaim();
+					}
+				} else {
+					bClaim.active = false;
+					log("# Error: SuoraFX not connected!");
+				}
+			});
+			
+			bRun.clicked.connect(() => {
+				log("# Executing Lua code... ");
+				lua.execute(get_lua_code());
+				log("# Done.");
+			});
+			bRun.set_sensitive(false);
 
 			// finish window initialization
 			window.add(EditorWindow);
+			
+			window.destroy.connect(() => {
+				if (device.open())
+					device.unclaim();
+			});
+			
 			window.show_all();
 		}
 		

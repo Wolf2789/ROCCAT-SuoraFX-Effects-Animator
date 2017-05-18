@@ -1,1 +1,1 @@
-keyboard_update(Preset.COLORSHIFT)
+keyboard(SET, Preset.COLOR_SHIFT)

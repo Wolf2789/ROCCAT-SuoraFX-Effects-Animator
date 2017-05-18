@@ -25,13 +25,13 @@ namespace SuoraFXEffectsAnimator {
       L.register("print", print);
       L.register("println", println);
       L.register("keyboard", keyboard);
-      L.register("command", command);
     }
 
     public bool   available()            { return L != null; }
     public int    call()                 { return L.pcall(0,0,0); }
     public string get_error()            { return L.to_string(-1); }
-    public void   load_file(string file) { L.load_file(file); }
+    public int    load_file(string file) { return L.load_file(file); }
+    public int    load_string(string s)  { return L.load_string(s); }
     public void   execute(string code)   { L.do_string(code); }
 
 
@@ -64,18 +64,6 @@ namespace SuoraFXEffectsAnimator {
       }
       LOG(to_print, true);
       return 0;
-    }
-
-    
-    static int command(LuaVM L) {
-      int args = L.get_top();
-      if (args > 0) {
-        device.customCommand = (uint8)L.to_integer(1);
-        return 0;
-      } else {
-        L.push_number(device.customCommand);
-        return 1;
-      }
     }
 
 

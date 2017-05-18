@@ -14,8 +14,6 @@ namespace SuoraFXEffectsAnimator {
     public uint8 speed = 0x0A;
     public uint8 brightness = 0x32;
     public uint8 color = 0x08;
-    
-    public uint8 customCommand = 0x00;
 
     public SuoraFX() {
       // initialize device

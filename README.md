@@ -27,7 +27,7 @@ This will produce _SuoraFX-Effects-Animator_ executable that should be executed 
 You can also make and run at once with `make build_and_run`
 
 ## TODO
-* add all premade built-in presets
+* ~~add all premade built-in presets~~
 * remapping keys
 * effects API
 * no keyboard flickering when setting custom preset
